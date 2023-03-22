@@ -1,0 +1,52 @@
+{
+  "name": "@infomaximum/graphql-models",
+  "version": "1.4.0",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "typings": "dist/index.d.ts",
+  "license": "Apache-2.0",
+  "description": "Models for easy work with graphql",
+  "author": "Infomaximum Frontend Team (https://infomaximum.com)",
+  "files": [
+    "dist/",
+    "LICENSE"
+  ],
+  "scripts": {
+    "release": "standard-version && rollup -c",
+    "build": "rollup -c"
+  },
+  "dependencies": {
+    "@infomaximum/asserts": "^1.0.0",
+    "lodash.get": "^4.4.2"
+  },
+  "devDependencies": {
+    "@infomaximum/configs": "^2.0.0",
+    "@rollup/plugin-commonjs": "24.0.1",
+    "@rollup/plugin-node-resolve": "15.0.1",
+    "@rollup/plugin-typescript": "11.0.0",
+    "@types/lodash.get": "^4.4.7",
+    "rollup": "3.20.0",
+    "rollup-plugin-copy": "3.4.0",
+    "standard-version": "9.5.0",
+    "prettier": "2.8.6",
+    "tslib": "^2.4.1",
+    "typescript": "5.0.2"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Infomaximum/graphql-models.git"
+  },
+  "keywords": [
+    "graphql",
+    "models",
+    "data",
+    "typename"
+  ],
+  "bugs": {
+    "url": "https://github.com/Infomaximum/graphql-models/issues"
+  },
+  "homepage": "https://github.com/Infomaximum/graphql-models#readme"
+}

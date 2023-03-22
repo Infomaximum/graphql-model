@@ -1,0 +1,10 @@
+{
+  "extends": "@infomaximum/configs/tsconfig.lib.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true
+  },
+  "include": ["lib", "index.ts"],
+  "exclude": ["/node_modules/", "**/node_modules", "**/.*/", "dist"]
+}
