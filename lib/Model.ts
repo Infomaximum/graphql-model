@@ -1,4 +1,4 @@
-import { assertSilent, assertSimple } from "@infomaximum/asserts";
+import { assertSilent, assertSimple } from "@infomaximum/assert";
 import get from "lodash.get";
 import type TypenameToModel from "./TypenameToModel";
 

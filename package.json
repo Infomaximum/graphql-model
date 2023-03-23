@@ -1,5 +1,5 @@
 {
-  "name": "@infomaximum/graphql-models",
+  "name": "@infomaximum/graphql-model",
   "version": "1.4.1",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -12,15 +12,15 @@
     "LICENSE"
   ],
   "scripts": {
-    "release": "standard-version && rollup -c",
+    "release": "tsc --noEmit && standard-version && rollup -c",
     "build": "rollup -c"
   },
   "dependencies": {
-    "@infomaximum/asserts": "^1.0.0",
+    "@infomaximum/assert": "^1.0.0",
     "lodash.get": "^4.4.2"
   },
   "devDependencies": {
-    "@infomaximum/configs": "^2.0.0",
+    "@infomaximum/config": "^2.0.0",
     "@rollup/plugin-commonjs": "24.0.1",
     "@rollup/plugin-node-resolve": "15.0.1",
     "@rollup/plugin-typescript": "11.0.0",
@@ -37,16 +37,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Infomaximum/graphql-models.git"
+    "url": "git+https://github.com/Infomaximum/graphql-model.git"
   },
   "keywords": [
     "graphql",
-    "models",
+    "model",
     "data",
     "typename"
   ],
   "bugs": {
-    "url": "https://github.com/Infomaximum/graphql-models/issues"
+    "url": "https://github.com/Infomaximum/graphql-model/issues"
   },
-  "homepage": "https://github.com/Infomaximum/graphql-models#readme"
+  "homepage": "https://github.com/Infomaximum/graphql-model#readme"
 }

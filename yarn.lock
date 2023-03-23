@@ -28,15 +28,15 @@
   resolved "https://registry.yarnpkg.com/@hutson/parse-repository-url/-/parse-repository-url-3.0.2.tgz#98c23c950a3d9b6c8f0daed06da6c3af06981340"
   integrity sha512-H9XAx3hc0BQHY6l+IFSWHDySypcXsvsuLhgYLUGywmJ5pswRVQJUHpOsobnLYp2ZUaUlKiKDrgWWhosOwAEM8Q==
 
-"@infomaximum/asserts@^1.0.0":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@infomaximum/asserts/-/asserts-1.1.1.tgz#679fc13f96fbbb729d372fea2b8631f70865647a"
-  integrity sha512-H/tYTRts+COBqeMSEHq3vJt2lHEK3SXXVLscJSanRoiX78qFjz3ihyzHhfAcBubM/cNMoQ6EIOLNR6Rt0RiISQ==
+"@infomaximum/assert@^1.0.0":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@infomaximum/assert/-/assert-1.1.2.tgz#2474b2003f12243b0041e52557a76422767ebd5c"
+  integrity sha512-yjG8I2T71JCRWCXMWb+W6u2tSSy6MREoEeRt4MKEb4Vgc3ukQUK6Ol93NbkJFPezWox+ZURaaxcVt2U9NQQ8Bg==
 
-"@infomaximum/configs@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@infomaximum/configs/-/configs-2.0.0.tgz#9188e52962b52bc9c17a6b4cd5b2c5a3802b9229"
-  integrity sha512-tVkR6fML6FQo6VYrb57mo5VD1Jt5tV2i8xrTYHT3h8uvua54tWjEJFRiL7VCCM/QaGZOjFqjXiRg6HqFBVz8Nw==
+"@infomaximum/config@^2.0.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@infomaximum/config/-/config-2.1.0.tgz#fe149bd2b12f3754064569f88544f46a1c7ed60e"
+  integrity sha512-kIWjP6+YEKI6pmdpAeCWIhKfFopDE+kCGJZAo8BmMwu1d2rQw8OHZw2lrdwd60et7qvtb7BiWCdreR+/YF7ZNQ==
 
 "@jridgewell/sourcemap-codec@^1.4.13":
   version "1.4.14"
