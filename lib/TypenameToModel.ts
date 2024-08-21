@@ -6,7 +6,7 @@ type TModel = typeof Model;
 
 /** Хранит в себе все модели по их typename */
 class TypenameToModel {
-  private typenames: Record<string, TModel> = {};
+  private typenames: Map<string, TModel> = new Map();
 
   private expandModel(baseModel: TModel, expandingModel: TModel): TModel {
     Object.setPrototypeOf(expandingModel.prototype, baseModel.prototype);
@@ -24,7 +24,7 @@ class TypenameToModel {
     typename: T,
     modelClass: K
   ): void {
-    const baseModel = this.typenames[typename];
+    const baseModel = this.typenames.get(typename);
 
     if (baseModel && baseModel === modelClass) {
       assertSilent(
@@ -36,13 +36,13 @@ class TypenameToModel {
     }
 
     if (!baseModel) {
-      this.typenames[typename] = modelClass;
+      this.typenames.set(typename, modelClass);
     } else {
       /* защита от ошибки 'Cyclic __proto__ value', возникает когда модель которая пытается 
         расширить другую модель является базовой для расширяемой модели     
       */
       if (modelClass && !modelClass.isPrototypeOf(baseModel)) {
-        this.typenames[typename] = this.expandModel(baseModel, modelClass);
+        this.typenames.set(typename, this.expandModel(baseModel, modelClass));
       }
     }
   }
@@ -52,13 +52,13 @@ class TypenameToModel {
    * @param {string} typename - typename объекта, для которого ищется класс модели
    * @returns {Class} - класс модели
    */
-  public get<T extends TModel>(typename: string): T {
+  public get<T extends TModel>(typename: string): T | undefined {
     assertSimple(
       this.has(typename),
       `Модель с typename = "${typename}" не найдена`
     );
 
-    return this.typenames[typename] as T;
+    return this.typenames.get(typename) as T | undefined;
   }
 
   /**
@@ -84,7 +84,7 @@ class TypenameToModel {
    * @param typename - typename объекта, для которого выполняется проверка
    */
   public has(typename: string): boolean {
-    return !!this.typenames[typename];
+    return this.typenames.has(typename);
   }
 
   /**
