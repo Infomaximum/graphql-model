@@ -20,13 +20,23 @@ export type TModelCompactStruct = {
 };
 
 /** Параметры, необходимые для создания модели */
-export interface IModelParams {
+export interface IModelParams<T extends TModelStruct> {
   /** Структура с серверными данными */
-  struct: TModelStruct;
+  struct: T;
 
   /** Родительская модель, по отношению к данной */
   parent?: IModel;
 }
+
+type NestedKeys<T> = {
+  [K in keyof T]-?: T[K] extends object | undefined
+    ? T[K] extends infer O | undefined
+      ? O extends object
+        ? (K & string) | `${K & string}.${NestedKeys<O>}`
+        : K & string
+      : never
+    : K & string;
+}[keyof T];
 
 export interface IModel {
   /** Возращает ID модели */
@@ -84,7 +94,7 @@ export interface IModel {
  * @property {TModelStruct} struct - Структура с серверными данными
  * @property {IModel} parent - Родительская модель
  */
-abstract class Model implements IModel {
+abstract class Model<MS extends TModelStruct> implements IModel {
   /** используется для связывания классов моделей и данных приходящих с сервера */
   public static get typename(): TTypenameStatic | undefined {
     assertSilent(false, `У ${this.name} нет typename в статике`);
@@ -96,11 +106,11 @@ abstract class Model implements IModel {
   public static isModel = <T = typeof Model>(model: any): model is T =>
     Model?.isPrototypeOf(model);
 
-  protected parent?: Model | undefined;
-  protected struct!: TModelStruct;
+  protected parent?: Model<MS> | undefined;
+  protected struct!: MS;
   protected computedStruct!: Map<string, any>;
 
-  constructor(params: IModelParams) {
+  constructor(params: IModelParams<MS>) {
     assertSimple(!!params.struct, "Не заданы серверные данные для модели!");
 
     Object.defineProperty(this, "parent", {
@@ -177,7 +187,7 @@ abstract class Model implements IModel {
   }
 
   /** Возвращает родительскую модель (ту из которой она была создана) , если она есть.*/
-  public getParentModel<M extends Model = Model>(): M | undefined {
+  public getParentModel<M extends Model<MS> = Model<MS>>(): M | undefined {
     return this.parent as M | undefined;
   }
 
@@ -268,7 +278,7 @@ abstract class Model implements IModel {
    * @returns строковое значение поля. Если данных с сервера нет, то вернётся пустая
    * строка.
    */
-  protected getStringField(field: string): string | undefined {
+  protected getStringField(field: NestedKeys<MS>): string | undefined {
     let value: string | undefined;
 
     if (!this.isInCache(field)) {
@@ -300,7 +310,7 @@ abstract class Model implements IModel {
    * @param itemWrapperField - имя вложенного поля в котором лежат нужные данные
    * @returns список моделей
    */
-  protected getListField<M extends Model>(
+  protected getListField<M extends Model<MS>>(
     field: string,
     typenameToModel: TypenameToModel,
     itemWrapperField?: string
@@ -308,7 +318,7 @@ abstract class Model implements IModel {
     let value: M[] = [];
 
     if (!this.isInCache(field)) {
-      value = this.parseList<TModelStruct[], M>(
+      value = this.parseList<MS[], M>(
         get(this.struct, field),
         typenameToModel,
         field,
@@ -324,7 +334,7 @@ abstract class Model implements IModel {
    * @param field - имя поля, для которого производится очистка (нужно для отладки)
    * @param typenameToModel - инстанс контейнера с моделями
    */
-  protected getModelField<M extends Model>(
+  protected getModelField<M extends Model<MS>>(
     field: string,
     typenameToModel: TypenameToModel
   ): M | undefined {
@@ -517,7 +527,7 @@ abstract class Model implements IModel {
    * @param itemWrapperField - имя вложенного поля в котором лежат нужные данные
    * @returns - список моделей. Если данных с сервера нет, то вернётся пустой массив.
    */
-  protected parseList<T extends TModelStruct[], M extends Model>(
+  protected parseList<T extends MS[], M extends Model<MS>>(
     rawValue: T,
     typenameToModel: TypenameToModel,
     field: string,
@@ -527,7 +537,7 @@ abstract class Model implements IModel {
       const value: M[] = [];
 
       rawValue.forEach((rawValueItem) => {
-        let item: TModelStruct;
+        let item: MS;
 
         if (
           itemWrapperField &&
@@ -574,11 +584,11 @@ abstract class Model implements IModel {
    * @param rawValue - сырые данные
    * @param typenameToModel - инстанс контейнера с моделями
    */
-  protected parseModel<M extends Model>(
-    rawValue: TModelStruct,
+  protected parseModel<M extends Model<MS>>(
+    rawValue: MS,
     typenameToModel: TypenameToModel
   ): M | undefined {
-    let ModelClass: (new (params: IModelParams) => any) | undefined;
+    let ModelClass: (new (params: IModelParams<MS>) => any) | undefined;
 
     if (rawValue !== null && typeof rawValue === "object") {
       if (rawValue.__typename) {
@@ -645,3 +655,38 @@ abstract class Model implements IModel {
 }
 
 export default Model;
+
+type TStruct = {
+  id: number;
+  __typename: string;
+} & Partial<{
+  qwe: {
+    a: number;
+    b: string;
+    c: {
+      s: {
+        d: {
+          f: {
+            h: { e: { e: { j: number } } };
+          };
+        };
+      };
+    };
+  };
+}>;
+
+class Model2 extends Model<TStruct> {
+  getQwe() {
+    return this.getStringField("qwe.c.s.d.f.h");
+  }
+}
+
+const r = new Model2({
+  struct: {
+    id: 1,
+    __typename: "qwe",
+    qwe: { a: 44 },
+  },
+});
+
+r.getQwe();
