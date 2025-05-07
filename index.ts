@@ -7,4 +7,4 @@ export {
   type TTypenameStatic,
 } from "./lib/Model";
 export { default as Group, type IGroup } from "./lib/Group";
-export { default as TypenameToModel } from "./lib/TypenameToModel";
+export { ModelRegistry } from "./lib/ModelRegistry";
