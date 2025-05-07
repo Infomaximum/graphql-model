@@ -13,7 +13,9 @@
   ],
   "scripts": {
     "release": "tsc --noEmit && standard-version && rollup -c",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "lint": "tsc --noEmit",
+    "test": "tsc -v"
   },
   "dependencies": {
     "@infomaximum/assert": "^1.0.0",
