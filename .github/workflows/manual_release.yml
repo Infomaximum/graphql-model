@@ -1,0 +1,102 @@
+name: Create Release
+
+on:
+  workflow_dispatch: # Ручной запуск
+    inputs:
+      prerelease:
+        description: "Предварительный релиз?"
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  lint:
+    name: Run lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run lint
+        run: yarn lint
+
+  test:
+    name: Run Jest tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run tests
+        run: yarn test
+
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: [lint, test] # Сначала линт и тесты
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Нужно для тегов
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "yarn"
+          registry-url: "https://registry.npmjs.org/"
+          always-auth: true
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Configure Git user
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Run release script
+        run: |
+          if [ "${{ inputs.prerelease }}" = "true" ]; then
+            yarn prerelease
+          else
+            yarn release
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push changes
+        run: |
+          git push origin HEAD --follow-tags
+
+      - name: Build package
+        run: yarn build
+
+      - name: Publish package
+        run: |
+          if [ "${{ inputs.prerelease }}" = "true" ]; then
+            yarn publish --access public --tag prerelease
+          else
+            yarn publish --access public
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

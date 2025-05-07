@@ -1,6 +1,6 @@
 import { assertSilent, assertSimple } from "@infomaximum/assert";
 import get from "lodash.get";
-import type TypenameToModel from "./TypenameToModel";
+import type { ModelRegistry } from "./ModelRegistry";
 
 export type TTypenameStatic = string | string[] | null;
 
@@ -296,13 +296,13 @@ abstract class Model implements IModel {
   /**
    * Получает список моделей из сырых данных
    * @param field - поле, которое хранит значение в сырых данных
-   * @param typenameToModel - инстанс контейнера с моделями
+   * @param modelRegistry - инстанс контейнера с моделями
    * @param itemWrapperField - имя вложенного поля в котором лежат нужные данные
    * @returns список моделей
    */
   protected getListField<M extends Model>(
     field: string,
-    typenameToModel: TypenameToModel,
+    modelRegistry: ModelRegistry,
     itemWrapperField?: string
   ): M[] {
     let value: M[] = [];
@@ -310,7 +310,7 @@ abstract class Model implements IModel {
     if (!this.isInCache(field)) {
       value = this.parseList<TModelStruct[], M>(
         get(this.struct, field),
-        typenameToModel,
+        modelRegistry,
         field,
         itemWrapperField
       );
@@ -326,12 +326,12 @@ abstract class Model implements IModel {
    */
   protected getModelField<M extends Model>(
     field: string,
-    typenameToModel: TypenameToModel
+    modelRegistry: ModelRegistry
   ): M | undefined {
     let value: M | undefined;
 
     if (!this.isInCache(field)) {
-      value = this.parseModel<M>(get(this.struct, field), typenameToModel);
+      value = this.parseModel<M>(get(this.struct, field), modelRegistry);
     }
 
     return this.cacheValue(value, field);
@@ -519,7 +519,7 @@ abstract class Model implements IModel {
    */
   protected parseList<T extends TModelStruct[], M extends Model>(
     rawValue: T,
-    typenameToModel: TypenameToModel,
+    modelRegistry: ModelRegistry,
     field: string,
     itemWrapperField?: string
   ): M[] {
@@ -550,7 +550,7 @@ abstract class Model implements IModel {
           item = rawValueItem;
         }
 
-        const model = this.parseModel<M>(item, typenameToModel);
+        const model = this.parseModel<M>(item, modelRegistry);
 
         model && value.push(model);
       });
@@ -576,13 +576,13 @@ abstract class Model implements IModel {
    */
   protected parseModel<M extends Model>(
     rawValue: TModelStruct,
-    typenameToModel: TypenameToModel
+    modelRegistry: ModelRegistry
   ): M | undefined {
     let ModelClass: (new (params: IModelParams) => any) | undefined;
 
     if (rawValue !== null && typeof rawValue === "object") {
       if (rawValue.__typename) {
-        ModelClass = typenameToModel.get<any>(rawValue.__typename);
+        ModelClass = modelRegistry.get<any>(rawValue.__typename);
       } else {
         assertSimple(false, "Не найден typename в серверных данных");
       }
