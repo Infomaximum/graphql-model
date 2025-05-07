@@ -12,10 +12,12 @@
     "LICENSE"
   ],
   "scripts": {
-    "release": "tsc --noEmit && standard-version && rollup -c",
+    "release": "standard-version",
+    "prerelease": "standard-version -p",
     "build": "rollup -c",
     "lint": "tsc --noEmit",
-    "test": "tsc -v"
+    "test": "tsc -v",
+    "prepublish": "yarn build"
   },
   "dependencies": {
     "@infomaximum/assert": "^1.0.0",
