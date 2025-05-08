@@ -8,7 +8,7 @@ type TModel = typeof Model;
 export class ModelRegistry {
   private registry: Map<string, TModel> = new Map();
 
-  private instances = new Set<ModelRegistry>();
+  private fallbacksRegisters = new Set<ModelRegistry>();
 
   private expandModel(baseModel: TModel, expandingModel: TModel): TModel {
     Object.setPrototypeOf(expandingModel.prototype, baseModel.prototype);
@@ -113,7 +113,7 @@ export class ModelRegistry {
   }
 
   private hasInAny(typename: string) {
-    for (const instance of this.instances) {
+    for (const instance of this.fallbacksRegisters) {
       if (instance.has(typename)) {
         return true;
       }
@@ -123,7 +123,7 @@ export class ModelRegistry {
   }
 
   private getFromAny<T extends TModel>(typename: string): T | undefined {
-    for (const instance of this.instances) {
+    for (const instance of this.fallbacksRegisters) {
       if (instance.has(typename)) {
         return instance.get(typename);
       }
@@ -133,6 +133,8 @@ export class ModelRegistry {
   }
 
   public extends(modelRegistry: ModelRegistry) {
-    this.instances.add(modelRegistry);
+    this.fallbacksRegisters.add(modelRegistry);
+
+    return this;
   }
 }
