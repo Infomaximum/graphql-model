@@ -20,16 +20,10 @@ export class ModelRegistry {
     typename: T,
     modelClass: K
   ): void {
-    const baseModel = this.registry.has(typename);
-
-    if (baseModel) {
-      assertSilent(
-        false,
-        `Попытка зарегистрировать уже существующую модель ${modelClass.name} с typename - ${modelClass.typename}`
-      );
-
-      return;
-    }
+    assertSimple(
+      !this.registry.has(typename),
+      `Попытка зарегистрировать уже существующую модель ${modelClass.name} с typename - ${modelClass.typename}`
+    );
 
     this.registry.set(typename, modelClass);
   }
