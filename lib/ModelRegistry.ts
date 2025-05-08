@@ -10,12 +10,6 @@ export class ModelRegistry {
 
   private fallbacksRegisters = new Set<ModelRegistry>();
 
-  private expandModel(baseModel: TModel, expandingModel: TModel): TModel {
-    Object.setPrototypeOf(expandingModel.prototype, baseModel.prototype);
-
-    return expandingModel;
-  }
-
   /**
    * Добавляет в список класс модели по typename
    * @param {string} typename - typename объекта, для которого задаётся класс модели
@@ -26,9 +20,9 @@ export class ModelRegistry {
     typename: T,
     modelClass: K
   ): void {
-    const baseModel = this.registry.get(typename);
+    const baseModel = this.registry.has(typename);
 
-    if (baseModel && baseModel === modelClass) {
+    if (baseModel) {
       assertSilent(
         false,
         `Попытка зарегистрировать уже существующую модель ${modelClass.name} с typename - ${modelClass.typename}`
@@ -37,16 +31,7 @@ export class ModelRegistry {
       return;
     }
 
-    if (!baseModel) {
-      this.registry.set(typename, modelClass);
-    } else {
-      /* защита от ошибки 'Cyclic __proto__ value', возникает когда модель которая пытается 
-        расширить другую модель является базовой для расширяемой модели     
-      */
-      if (modelClass && !modelClass.isPrototypeOf(baseModel)) {
-        this.registry.set(typename, this.expandModel(baseModel, modelClass));
-      }
-    }
+    this.registry.set(typename, modelClass);
   }
 
   /**
