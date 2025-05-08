@@ -1,6 +1,6 @@
 import type { TModelStruct } from "./Model";
 import Model from "./Model";
-import { assertSilent, assertSimple } from "@infomaximum/assert";
+import { assertSimple } from "@infomaximum/assert";
 
 type TModel = typeof Model;
 
