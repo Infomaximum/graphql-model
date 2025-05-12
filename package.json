@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "release": "standard-version",
-    "prerelease": "standard-version -p",
+    "release:rc": "standard-version -p",
     "build": "rollup -c",
     "lint": "tsc --noEmit",
     "test": "tsc -v",
