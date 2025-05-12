@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-0](https://github.com/Infomaximum/graphql-model/compare/v1.5.0...v2.0.0-0) (2025-05-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* переименован класс TypenameToModel -> ModelRegistry
+
+### Features
+
+* реализовано расширение реестров моделей ([b8d66af](https://github.com/Infomaximum/graphql-model/commit/b8d66afbba596585601c636ef5a5bb61b8f6c0a7))
+
 ## [1.5.0](https://github.com/Infomaximum/graphql-model/compare/v1.4.3...v1.5.0) (2024-08-21)
 
 

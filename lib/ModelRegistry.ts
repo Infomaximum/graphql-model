@@ -1,18 +1,14 @@
 import type { TModelStruct } from "./Model";
 import Model from "./Model";
-import { assertSilent, assertSimple } from "@infomaximum/assert";
+import { assertSimple } from "@infomaximum/assert";
 
 type TModel = typeof Model;
 
 /** Хранит в себе все модели по их typename */
-class TypenameToModel {
-  private typenames: Map<string, TModel> = new Map();
+export class ModelRegistry {
+  private registry: Map<string, TModel> = new Map();
 
-  private expandModel(baseModel: TModel, expandingModel: TModel): TModel {
-    Object.setPrototypeOf(expandingModel.prototype, baseModel.prototype);
-
-    return expandingModel;
-  }
+  private fallbacksRegisters = new Set<ModelRegistry>();
 
   /**
    * Добавляет в список класс модели по typename
@@ -24,27 +20,12 @@ class TypenameToModel {
     typename: T,
     modelClass: K
   ): void {
-    const baseModel = this.typenames.get(typename);
+    assertSimple(
+      !this.registry.has(typename),
+      `Попытка зарегистрировать уже существующую модель ${modelClass.name} с typename - ${modelClass.typename}`
+    );
 
-    if (baseModel && baseModel === modelClass) {
-      assertSilent(
-        false,
-        `Попытка зарегистрировать уже существующую модель ${modelClass.name} с typename - ${modelClass.typename}`
-      );
-
-      return;
-    }
-
-    if (!baseModel) {
-      this.typenames.set(typename, modelClass);
-    } else {
-      /* защита от ошибки 'Cyclic __proto__ value', возникает когда модель которая пытается 
-        расширить другую модель является базовой для расширяемой модели     
-      */
-      if (modelClass && !modelClass.isPrototypeOf(baseModel)) {
-        this.typenames.set(typename, this.expandModel(baseModel, modelClass));
-      }
-    }
+    this.registry.set(typename, modelClass);
   }
 
   /**
@@ -58,7 +39,9 @@ class TypenameToModel {
       `Модель с typename = "${typename}" не найдена`
     );
 
-    return this.typenames.get(typename) as T | undefined;
+    return (this.registry.get(typename) || this.getFromAny<T>(typename)) as
+      | T
+      | undefined;
   }
 
   /**
@@ -84,7 +67,7 @@ class TypenameToModel {
    * @param typename - typename объекта, для которого выполняется проверка
    */
   public has(typename: string): boolean {
-    return this.typenames.has(typename);
+    return this.registry.has(typename) || this.hasInAny(typename);
   }
 
   /**
@@ -107,6 +90,30 @@ class TypenameToModel {
       }
     });
   }
-}
 
-export default TypenameToModel;
+  private hasInAny(typename: string) {
+    for (const instance of this.fallbacksRegisters) {
+      if (instance.has(typename)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private getFromAny<T extends TModel>(typename: string): T | undefined {
+    for (const instance of this.fallbacksRegisters) {
+      if (instance.has(typename)) {
+        return instance.get(typename);
+      }
+    }
+
+    return undefined;
+  }
+
+  public extends(modelRegistry: ModelRegistry) {
+    this.fallbacksRegisters.add(modelRegistry);
+
+    return this;
+  }
+}
