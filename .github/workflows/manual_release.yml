@@ -77,7 +77,7 @@ jobs:
       - name: Run release script
         run: |
           if [ "${{ inputs.prerelease }}" = "true" ]; then
-            yarn prerelease
+            yarn release:rc
           else
             yarn release
           fi
