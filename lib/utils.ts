@@ -35,7 +35,7 @@ function getOwnPropertyNames(obj: ObjectWithPrototype) {
   return Object.getOwnPropertyNames(obj.prototype);
 }
 
-export function findModelMethodCollisions(
+export function findCollisionsInModelMethods(
   baseModel: typeof Model,
   currentModel: typeof Model
 ) {
