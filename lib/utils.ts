@@ -42,20 +42,25 @@ export function findCollisionsInModelMethods(
   const prototypesBaseModel = getPrototypes(baseModel);
   const prototypesCurrentModel = getPrototypes(currentModel);
 
-  const protoDiff = getDifference(prototypesBaseModel, prototypesCurrentModel);
+  const modelPrototypeDiff = getDifference(
+    prototypesBaseModel,
+    prototypesCurrentModel
+  );
 
-  const ownPropertiesDiff = new Set(
-    Array.from(protoDiff).reduce<string[]>(
+  const ownPropertyNamesDiff = new Set(
+    Array.from(modelPrototypeDiff).reduce<string[]>(
       (acc, v: ObjectWithPrototype) => acc.concat(getOwnPropertyNames(v)),
       []
     )
   );
 
-  const ownPropertiesCurrentModel = new Set(getOwnPropertyNames(currentModel));
+  const ownPropertyNamesCurrentModel = new Set(
+    getOwnPropertyNames(currentModel)
+  );
 
   const intersection = getIntersection(
-    ownPropertiesCurrentModel,
-    ownPropertiesDiff
+    ownPropertyNamesCurrentModel,
+    ownPropertyNamesDiff
   );
 
   const modelOwnProperties = new Set([
