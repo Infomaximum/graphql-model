@@ -1,6 +1,7 @@
 import type { TModelStruct } from "./Model";
 import Model from "./Model";
 import { assertSilent, assertSimple } from "@infomaximum/assert";
+import { findModelMethodCollisions } from "./utils";
 
 type TModel = typeof Model;
 
@@ -42,6 +43,8 @@ class TypenameToModel {
         расширить другую модель является базовой для расширяемой модели     
       */
       if (modelClass && !modelClass.isPrototypeOf(baseModel)) {
+        findModelMethodCollisions(baseModel, modelClass);
+
         this.typenames.set(typename, this.expandModel(baseModel, modelClass));
       }
     }
