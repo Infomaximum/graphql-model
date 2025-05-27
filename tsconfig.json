@@ -2,6 +2,8 @@
   "extends": "@infomaximum/config/tsconfig.lib.json",
   "compilerOptions": {
     "outDir": "dist",
+    "declaration": true,
+    "declarationDir": "dist/dts",
     "exactOptionalPropertyTypes": true,
     "noUncheckedIndexedAccess": true
   },
