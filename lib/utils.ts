@@ -73,7 +73,7 @@ export function findCollisionsInModelMethods(
 
   result.size &&
     console.error(
-      `В моделе ${baseModel.name} пересечение \
+      `В модели ${baseModel.name} пересечение \
 полей [${Array.from(result.values()).join(", ")}] \
 с моделью ${currentModel.name}, typename= ${currentModel.typename}`
     );
