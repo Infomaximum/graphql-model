@@ -1,6 +1,6 @@
 {
   "name": "@infomaximum/graphql-model",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "typings": "dist/index.d.ts",
