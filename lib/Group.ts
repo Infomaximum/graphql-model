@@ -11,6 +11,14 @@ export interface IGroup extends IModel {
 
 abstract class Group extends Model implements IGroup {
   public abstract getItems(): Model[];
+
+  /**
+   * Возвращает ID групповой модели.
+   * @returns number
+   */
+  public override getId() {
+    return this.getNumberField("id", true) ?? -1;
+  }
 }
 
 export default Group;
