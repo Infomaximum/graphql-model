@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://github.com/Infomaximum/graphql-model/compare/v1.6.0...v1.7.0) (2026-04-09)
+
+
+### Features
+
+* добавлен override getId для групповой модели, возвращающий числовой id из структуры либо -1 при отсутствии в структуре ([1ac4c65](https://github.com/Infomaximum/graphql-model/commit/1ac4c6516678ceea66982d369ab85d38a790f226))
+
 ## [1.6.0](https://github.com/Infomaximum/graphql-model/compare/v1.5.0...v1.6.0) (2025-05-30)
 
 
