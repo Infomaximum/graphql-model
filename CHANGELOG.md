@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.1](https://github.com/Infomaximum/graphql-model/compare/v1.7.0...v1.7.1) (2026-06-02)
+
+
+### Bug Fixes
+
+* заменено 'any' на 'unknown' в TModelStruct и исправлены сообщения об ошибках ([42dfc6c](https://github.com/Infomaximum/graphql-model/commit/42dfc6cc45d2efe863663e88df6c82902b229686))
+* обновлен год и владелец авторских прав в LICENSE ([d60ff5a](https://github.com/Infomaximum/graphql-model/commit/d60ff5a0a4855056db9726bfa7fd965f51541375))
+* обновлено имя ключа для пути к TypeScript в настройках VSCode ([f5cbb75](https://github.com/Infomaximum/graphql-model/commit/f5cbb75ae5dbc2b6dcb8b034948eec8b7bb62056))
+
 ## [1.7.0](https://github.com/Infomaximum/graphql-model/compare/v1.6.0...v1.7.0) (2026-04-09)
 
 
