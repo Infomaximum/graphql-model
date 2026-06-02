@@ -10,7 +10,7 @@ type TModelAncestorCriteria = IModel | ((model: IModel) => boolean);
 export type TModelStruct = {
   id: number;
   __typename: string;
-  [field: string]: any;
+  [field: string]: unknown;
 };
 
 /** Структура с минимальным набором полей, достаточная для восстановления модели */
@@ -134,7 +134,7 @@ abstract class Model implements IModel {
 
     assertSimple(
       !!this.struct[field],
-      `Модели c typename ${this.struct.__typename} не передан id объекта!`
+      `Модели c typename ${this.struct.__typename} не передан id объекта!`,
     );
 
     return this.getNumberField(field, true) as number;
@@ -184,7 +184,7 @@ abstract class Model implements IModel {
   public getTypename(): string {
     assertSimple(
       !!this.struct.__typename,
-      "Модели не передан тип объекта __typename!"
+      "Модели не передан тип объекта __typename!",
     );
 
     return this.struct.__typename;
@@ -251,7 +251,7 @@ abstract class Model implements IModel {
    */
   protected getNumberField(
     field: string,
-    checkIsInteger: boolean = false
+    checkIsInteger: boolean = false,
   ): number | undefined {
     let value: number | undefined;
 
@@ -303,16 +303,16 @@ abstract class Model implements IModel {
   protected getListField<M extends Model>(
     field: string,
     typenameToModel: TypenameToModel,
-    itemWrapperField?: string
+    itemWrapperField?: string,
   ): M[] {
     let value: M[] = [];
 
     if (!this.isInCache(field)) {
       value = this.parseList<TModelStruct[], M>(
-        get(this.struct, field),
+        get(this.struct, field) as TModelStruct[],
         typenameToModel,
         field,
-        itemWrapperField
+        itemWrapperField,
       );
     }
 
@@ -326,12 +326,15 @@ abstract class Model implements IModel {
    */
   protected getModelField<M extends Model>(
     field: string,
-    typenameToModel: TypenameToModel
+    typenameToModel: TypenameToModel,
   ): M | undefined {
     let value: M | undefined;
 
     if (!this.isInCache(field)) {
-      value = this.parseModel<M>(get(this.struct, field), typenameToModel);
+      value = this.parseModel<M>(
+        get(this.struct, field) as TModelStruct,
+        typenameToModel,
+      );
     }
 
     return this.cacheValue(value, field);
@@ -341,7 +344,7 @@ abstract class Model implements IModel {
     let value: T[] = [];
 
     if (!this.isInCache(field)) {
-      value = this.parseEnum<T>(get(this.struct, field), field);
+      value = this.parseEnum<T>(get(this.struct, field) as T, field);
     }
 
     return this.cacheValue(value, field);
@@ -373,7 +376,7 @@ abstract class Model implements IModel {
   protected parseNumber(
     rawValue: any,
     field: string,
-    checkIsInteger: boolean = false
+    checkIsInteger: boolean = false,
   ): number | undefined {
     if (
       typeof rawValue === "number" &&
@@ -388,8 +391,8 @@ abstract class Model implements IModel {
           intValue === rawValue,
           `В поле "${field}" модели передано число с плавающей точкой - "${get(
             this.struct,
-            field
-          )}"!`
+            field,
+          )}"!`,
         );
 
         return intValue;
@@ -417,8 +420,8 @@ abstract class Model implements IModel {
           intValue === floatValue,
           `В поле "${field}" модели передано число с плавающей точкой - "${get(
             this.struct,
-            field
-          )}"!`
+            field,
+          )}"!`,
         );
 
         return intValue;
@@ -437,8 +440,8 @@ abstract class Model implements IModel {
       false,
       `В поле "${field}" модели передано значение, неприводимое к числу - "${get(
         this.struct,
-        field
-      )}"!`
+        field,
+      )}"!`,
     );
   }
 
@@ -470,8 +473,8 @@ abstract class Model implements IModel {
       false,
       `В поле "${field}" модели передано значение, неприводимое к строке - "${get(
         this.struct,
-        field
-      )}"!`
+        field,
+      )}"!`,
     );
 
     return "";
@@ -502,8 +505,8 @@ abstract class Model implements IModel {
       false,
       `В поле "${field}" модели передано значение, неприводимое к булевому - "${get(
         this.struct,
-        field
-      )}"!`
+        field,
+      )}"!`,
     );
 
     return false;
@@ -521,7 +524,7 @@ abstract class Model implements IModel {
     rawValue: T,
     typenameToModel: TypenameToModel,
     field: string,
-    itemWrapperField?: string
+    itemWrapperField?: string,
   ): M[] {
     if (rawValue !== null && typeof rawValue === "object") {
       const value: M[] = [];
@@ -537,8 +540,8 @@ abstract class Model implements IModel {
           const nestedData = get(rawValueItem, itemWrapperField);
 
           assertSimple(
-            nestedData,
-            `В данных не найдено поле ${itemWrapperField}`
+            !!nestedData,
+            `В данных не найдено поле ${itemWrapperField}`,
           );
 
           const nearbyData = { ...rawValueItem };
@@ -562,8 +565,8 @@ abstract class Model implements IModel {
       false,
       `В поле "${field}" модели передано не итерируемое значение - "${get(
         this.struct,
-        field
-      )}"!`
+        field,
+      )}"!`,
     );
 
     return [];
@@ -576,7 +579,7 @@ abstract class Model implements IModel {
    */
   protected parseModel<M extends Model>(
     rawValue: TModelStruct,
-    typenameToModel: TypenameToModel
+    typenameToModel: TypenameToModel,
   ): M | undefined {
     let ModelClass: (new (params: IModelParams) => any) | undefined;
 
@@ -589,7 +592,7 @@ abstract class Model implements IModel {
 
       assertSilent(
         !!ModelClass,
-        `Нет зарегистрированной модели по typename ${rawValue.__typename}`
+        `Нет зарегистрированной модели по typename ${rawValue.__typename}`,
       );
 
       return ModelClass
@@ -610,8 +613,8 @@ abstract class Model implements IModel {
       false,
       `В поле "${field}" модели передано не массив - "${get(
         this.struct,
-        field
-      )}"!`
+        field,
+      )}"!`,
     );
 
     return [];
